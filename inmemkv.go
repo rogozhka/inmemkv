@@ -82,3 +82,19 @@ func (p *inMemKeyValue) Reset() {
         p.mmDeadlines = &sync.Map{}
     }
 }
+
+func (p *inMemKeyValue) ChangeTTL(newTTL time.Duration) {
+    p.ttl.Store(newTTL)
+    if p.isExpirable.Load() {
+        return
+    }
+    p.mmDeadlines = &sync.Map{}
+    p.isExpirable.Store(true)
+    p.Reset()
+}
+
+func (p *inMemKeyValue) DisableTTL() bool {
+    b := p.isExpirable.Load()
+    p.isExpirable.Store(false)
+    return b
+}

@@ -1,5 +1,7 @@
 package inmemkv
 
+import "time"
+
 var _ KeyValueStorage = (*inMemKeyValue)(nil)
 
 type KeyValueStorage interface {
@@ -8,4 +10,7 @@ type KeyValueStorage interface {
     Is(key string) bool
     Delete(key string)
     Reset()
+
+    ChangeTTL(newTTL time.Duration)
+    DisableTTL() bool
 }
